@@ -19,6 +19,21 @@ terraBeansRouter.get("/", async (req, res) => {
     errorResponse(err, res);
   }
 });
+terraBeansRouter.get("/year", async (req, res) => {
+  let year = req.query.year as string;
+  try {
+    const client = await getClient();
+    const cursor = client
+      .db()
+      .collection<Account>("tbaccounts")
+      .find({ "uploadedPhotos.date": new RegExp(year, "i") });
+    const results = await cursor.toArray();
+    res.status(200);
+    res.json(results);
+  } catch (err) {
+    errorResponse(err, res);
+  }
+});
 terraBeansRouter.get("/:uid", async (req, res) => {
   const uid = req.params.uid;
   try {
